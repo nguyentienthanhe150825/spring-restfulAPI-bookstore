@@ -1,5 +1,7 @@
 package vn.bookstoreProject.bookstore.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
@@ -21,5 +23,13 @@ public class AuthorService {
 
     public Author handleCreateAuthor(Author authorRequest) {
         return this.authorRepository.save(authorRequest);
+    }
+
+    public Author getAuthorById(long id) {
+        Optional<Author> authorOptional = this.authorRepository.findById(id);
+        if(authorOptional.isPresent()) {
+            return authorOptional.get();
+        }
+        return null;
     }
 }
