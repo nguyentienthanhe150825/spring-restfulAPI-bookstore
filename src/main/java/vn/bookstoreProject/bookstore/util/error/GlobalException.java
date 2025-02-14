@@ -3,6 +3,7 @@ package vn.bookstoreProject.bookstore.util.error;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -51,6 +52,16 @@ public class GlobalException {
         List<String> errors = fieldErrors.stream().map(f -> f.getDefaultMessage()).collect(Collectors.toList());
         res.setMessage(errors.size() > 1 ? errors : errors.get(0));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    // Handle lỗi isbn trùng lặp
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<RestResponse<Object>> handleDataIntegrityViolationException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());  // Trả về 409 Conflict
+        res.setMessage("ISBN already exists. Please use a unique ISBN.");
+        res.setError("Duplicate ISBN");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
     }
 
     // Handle lỗi 404 not found

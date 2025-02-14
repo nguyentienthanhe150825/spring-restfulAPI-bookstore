@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Valid;
 import vn.bookstoreProject.bookstore.domain.Author;
 import vn.bookstoreProject.bookstore.repository.AuthorRepository;
+import vn.bookstoreProject.bookstore.repository.BookRepository;
 
 @Service
 public class AuthorService {

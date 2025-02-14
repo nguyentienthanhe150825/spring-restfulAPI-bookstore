@@ -9,4 +9,5 @@ import vn.bookstoreProject.bookstore.domain.Book;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book>{
     
+    boolean existsByTitle(String title);
 }
