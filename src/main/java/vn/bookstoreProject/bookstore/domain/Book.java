@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +31,7 @@ public class Book {
     private LocalDate publishedDate;
 
     @Column(unique = true)
+    @Pattern(regexp = "\\d{13}", message = "ISBN must be exactly 13 digits")
     private String isbn;
 
     private BigDecimal price;
