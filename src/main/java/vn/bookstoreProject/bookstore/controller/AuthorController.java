@@ -25,7 +25,7 @@ public class AuthorController {
 
     @PostMapping("/authors")
     @ApiMessage("Create a new author")
-    public ResponseEntity<String> createNewAuthor(@Valid @RequestBody Author authorRequest) throws InvalidException {
+    public ResponseEntity<Author> createNewAuthor(@Valid @RequestBody Author authorRequest) throws InvalidException {
         // check authorName exist in database
         boolean isAuthorNameExist = this.authorService.isAuthorNameExist(authorRequest.getName());
         
@@ -33,7 +33,9 @@ public class AuthorController {
             throw new InvalidException("Name " + authorRequest.getName() + " is exist");
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("create success");
+        Author newAuthor = this.authorService.handleCreateAuthor(authorRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAuthor);
     }
 
 }
