@@ -30,10 +30,9 @@ public class AuthorController {
     @PostMapping("/authors")
     @ApiMessage("Create a new author")
     public ResponseEntity<Author> createNewAuthor(@Valid @RequestBody Author authorRequest) throws InvalidException {
-        // check authorName exist in database
+        // Check if the authorName from Request exists in the database or not
         boolean isAuthorNameExist = this.authorService.isAuthorNameExist(authorRequest.getName());
-        
-        if(isAuthorNameExist) {
+        if (isAuthorNameExist) {
             throw new InvalidException("Name " + authorRequest.getName() + " is exist in database");
         }
 
@@ -55,16 +54,24 @@ public class AuthorController {
     @PutMapping("/authors")
     @ApiMessage("Update author")
     public ResponseEntity<Author> updateAuthor(@Valid @RequestBody Author authorRequest) throws InvalidException {
-        // check authorName exist in database
-        boolean isAuthorNameExist = this.authorService.isAuthorNameExist(authorRequest.getName());
-        if(isAuthorNameExist) {
-            throw new InvalidException("Name " + authorRequest.getName() + " is exist in database");
-        }
-
-        Author authorUpdate = this.authorService.handleUpdateAuthor(authorRequest);
-        if (authorUpdate == null) {
+        // check id exist
+        Author currentAuthor = this.authorService.getAuthorById(authorRequest.getId());
+        if (currentAuthor == null) {
             throw new InvalidException("Author with id = " + authorRequest.getId() + " not exist");
         }
+
+        // If the Author Name found in the database based on the request Id is different from the Author Name from the request
+        if (!currentAuthor.getName().equals(authorRequest.getName())) {
+            // Check if the authorName from Request exists in the database or not
+            boolean isAuthorNameExist = this.authorService.isAuthorNameExist(authorRequest.getName());
+            if (isAuthorNameExist) {
+                throw new InvalidException("Name " + authorRequest.getName() + " is exist in database");
+            }
+        }
+
+        // update author
+        Author authorUpdate = this.authorService.handleUpdateAuthor(authorRequest, currentAuthor);
+
         return ResponseEntity.status(HttpStatus.OK).body(authorUpdate);
     }
 

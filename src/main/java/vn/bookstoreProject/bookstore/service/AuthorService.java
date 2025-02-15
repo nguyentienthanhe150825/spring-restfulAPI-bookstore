@@ -28,24 +28,19 @@ public class AuthorService {
 
     public Author getAuthorById(long id) {
         Optional<Author> authorOptional = this.authorRepository.findById(id);
-        if(authorOptional.isPresent()) {
+        if (authorOptional.isPresent()) {
             return authorOptional.get();
         }
         return null;
     }
 
-    public Author handleUpdateAuthor(Author authorRequest) {
-        // Find author by id
-        Author currentAuthor = this.getAuthorById(authorRequest.getId());
-        // check if currentAuthor is not null
-        if (currentAuthor != null) {
-            // set value
-            currentAuthor.setName(authorRequest.getName());
-            currentAuthor.setNationality(authorRequest.getNationality());
+    public Author handleUpdateAuthor(Author authorRequest, Author currentAuthor) {
+        // set value
+        currentAuthor.setName(authorRequest.getName());
+        currentAuthor.setNationality(authorRequest.getNationality());
 
-            // update author in database
-            currentAuthor = this.authorRepository.save(currentAuthor);
-        }
+        // update author in database
+        currentAuthor = this.authorRepository.save(currentAuthor);
 
         return currentAuthor;
     }

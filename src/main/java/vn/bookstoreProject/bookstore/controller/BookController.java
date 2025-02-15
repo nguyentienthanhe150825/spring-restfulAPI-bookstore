@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,30 @@ public class BookController {
             throw new InvalidException("Book with id = " + id + " not exist");
         }
         return ResponseEntity.status(HttpStatus.OK).body(book);
+    }
+
+    @PutMapping("/books")
+    @ApiMessage("Update book")
+    public ResponseEntity<Book> upateBook(@Valid @RequestBody Book bookRequest) throws InvalidException {
+        // check id exist
+        Book currentBook = this.bookService.getBookById(bookRequest.getId());
+        if (currentBook == null) {
+            throw new InvalidException("Book with id = " + bookRequest.getId() + " not exist");
+        }
+
+        // If the Book Title found in the database based on the request id is different from the Book Title from the request
+        if (!currentBook.getTitle().equals(bookRequest.getTitle())) {
+            // // Check if the Title from Request exists in the database or not
+            boolean isTitleExist = this.bookService.isTitleExist(bookRequest.getTitle());
+            if (isTitleExist) {
+                throw new InvalidException("Book with title: " + bookRequest.getTitle() + " is exist in database");
+            }
+        }
+
+        // update book
+        Book bookUpdate = this.bookService.handleUpdateBook(bookRequest, currentBook);
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookUpdate);
     }
 
 }
