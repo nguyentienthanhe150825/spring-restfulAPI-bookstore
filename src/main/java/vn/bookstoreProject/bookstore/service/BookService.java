@@ -1,5 +1,7 @@
 package vn.bookstoreProject.bookstore.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
@@ -33,6 +35,14 @@ public class BookService {
             }
         }
         return this.bookRepository.save(book);
+    }
+
+    public Book getBookById(long id) {
+        Optional<Book> bookOptional = this.bookRepository.findById(id);
+        if (bookOptional.isPresent()) {
+            return bookOptional.get();
+        }
+        return null;
     }
     
 }

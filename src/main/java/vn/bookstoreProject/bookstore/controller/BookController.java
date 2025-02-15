@@ -2,6 +2,8 @@ package vn.bookstoreProject.bookstore.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,16 @@ public class BookController {
         Book newBook = this.bookService.handleCreateBook(bookRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newBook);
+    }
+
+    @GetMapping("/books/{id}")
+    @ApiMessage("Fetch book by id")
+    public ResponseEntity<Book> getBookById(@PathVariable("id") long id) throws InvalidException {
+        Book book = this.bookService.getBookById(id);
+        if (book == null) {
+            throw new InvalidException("Book with id = " + id + " not exist");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(book);
     }
 
 }

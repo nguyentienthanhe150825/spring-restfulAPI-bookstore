@@ -43,7 +43,7 @@ public class AuthorController {
 
     @GetMapping("/authors/{id}")
     @ApiMessage("Fetch author by id")
-    public ResponseEntity<Author> getAuthorById(@Valid @PathVariable("id") long id) throws InvalidException {
+    public ResponseEntity<Author> getAuthorById(@PathVariable("id") long id) throws InvalidException {
         Author author = this.authorService.getAuthorById(id);
         if (author == null) {
             throw new InvalidException("Author with id = " + id + " not exist");
