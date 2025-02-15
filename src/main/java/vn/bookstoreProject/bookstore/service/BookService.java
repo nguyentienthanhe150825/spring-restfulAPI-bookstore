@@ -2,10 +2,15 @@ package vn.bookstoreProject.bookstore.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.bookstoreProject.bookstore.domain.Author;
 import vn.bookstoreProject.bookstore.domain.Book;
+import vn.bookstoreProject.bookstore.domain.response.Meta;
+import vn.bookstoreProject.bookstore.domain.response.ResultPaginationDTO;
 import vn.bookstoreProject.bookstore.repository.BookRepository;
 
 @Service
@@ -65,6 +70,23 @@ public class BookService {
 
     public void handleDeleteBook(long id) {
         this.bookRepository.deleteById(id);
+    }
+
+    public ResultPaginationDTO getAllBooks(Specification<Book> spec, Pageable pageable) {
+        Page<Book> pageBook = this.bookRepository.findAll(spec, pageable);
+        ResultPaginationDTO result = new ResultPaginationDTO();
+        Meta meta = new Meta();
+
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+
+        meta.setPages(pageBook.getTotalPages());
+        meta.setTotal(pageBook.getTotalElements());
+
+        result.setMeta(meta);
+        result.setResult(pageBook.getContent());
+
+        return result;
     }
 
 }

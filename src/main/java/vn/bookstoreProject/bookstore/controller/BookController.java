@@ -1,5 +1,7 @@
 package vn.bookstoreProject.bookstore.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import jakarta.validation.Valid;
 import vn.bookstoreProject.bookstore.domain.Book;
+import vn.bookstoreProject.bookstore.domain.response.ResultPaginationDTO;
 import vn.bookstoreProject.bookstore.service.BookService;
 import vn.bookstoreProject.bookstore.util.annotation.ApiMessage;
 import vn.bookstoreProject.bookstore.util.error.InvalidException;
@@ -88,6 +93,15 @@ public class BookController {
         // Delete book in database
         this.bookService.handleDeleteBook(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/books")
+    @ApiMessage("fetch all books")
+    public ResponseEntity<ResultPaginationDTO> getAllBooks(@Filter Specification<Book> spec, Pageable pageable) {
+        // https://github.com/turkraft/springfilter
+        ResultPaginationDTO listBooks = this.bookService.getAllBooks(spec, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(listBooks);
     }
 
 }
