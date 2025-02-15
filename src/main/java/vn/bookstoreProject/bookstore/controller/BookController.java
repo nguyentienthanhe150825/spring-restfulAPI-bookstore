@@ -2,6 +2,7 @@ package vn.bookstoreProject.bookstore.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +61,8 @@ public class BookController {
             throw new InvalidException("Book with id = " + bookRequest.getId() + " not exist");
         }
 
-        // If the Book Title found in the database based on the request id is different from the Book Title from the request
+        // If the Book Title found in the database based on the request id is different
+        // from the Book Title from the request
         if (!currentBook.getTitle().equals(bookRequest.getTitle())) {
             // // Check if the Title from Request exists in the database or not
             boolean isTitleExist = this.bookService.isTitleExist(bookRequest.getTitle());
@@ -73,6 +75,17 @@ public class BookController {
         Book bookUpdate = this.bookService.handleUpdateBook(bookRequest, currentBook);
 
         return ResponseEntity.status(HttpStatus.OK).body(bookUpdate);
+    }
+
+    @DeleteMapping("/books/{id}")
+    @ApiMessage("Delete a book")
+    public ResponseEntity<Void> deleteBook(@PathVariable("id") long id) throws InvalidException {
+        Book currentBook = this.bookService.getBookById(id);
+        if (currentBook == null) {
+            throw new InvalidException("Book with id = " + id + " not exist");
+        }
+        this.bookService.handleDeleteBook(id);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }

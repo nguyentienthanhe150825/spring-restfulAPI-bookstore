@@ -63,4 +63,8 @@ public class BookService {
         return currentBook;
     }
 
+    public void handleDeleteBook(long id) {
+        this.bookRepository.deleteById(id);
+    }
+
 }
