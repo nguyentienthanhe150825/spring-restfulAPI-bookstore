@@ -96,7 +96,7 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    @ApiMessage("fetch all books")
+    @ApiMessage("Fetch all books")
     public ResponseEntity<ResultPaginationDTO> getAllBooks(@Filter Specification<Book> spec, Pageable pageable) {
         // https://github.com/turkraft/springfilter
         ResultPaginationDTO listBooks = this.bookService.getAllBooks(spec, pageable);

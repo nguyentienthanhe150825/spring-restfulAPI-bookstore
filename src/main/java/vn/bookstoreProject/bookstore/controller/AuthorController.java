@@ -1,5 +1,7 @@
 package vn.bookstoreProject.bookstore.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import jakarta.validation.Valid;
 import vn.bookstoreProject.bookstore.domain.Author;
+import vn.bookstoreProject.bookstore.domain.response.ResultPaginationDTO;
 import vn.bookstoreProject.bookstore.service.AuthorService;
 import vn.bookstoreProject.bookstore.util.annotation.ApiMessage;
 import vn.bookstoreProject.bookstore.util.error.InvalidException;
@@ -87,6 +92,15 @@ public class AuthorController {
         // Delete author in database
         this.authorService.handleDeleteAuthor(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/authors")
+    @ApiMessage("Fetch all authors")
+    public ResponseEntity<ResultPaginationDTO> getAllAuthors(@Filter Specification<Author> spec, Pageable pageable) {
+        // https://github.com/turkraft/springfilter
+        ResultPaginationDTO listAuthors = this.authorService.getAllAuthors(spec, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(listAuthors);
     }
 
 }
