@@ -84,6 +84,8 @@ public class BookController {
         if (currentBook == null) {
             throw new InvalidException("Book with id = " + id + " not exist");
         }
+
+        // Delete book in database
         this.bookService.handleDeleteBook(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
