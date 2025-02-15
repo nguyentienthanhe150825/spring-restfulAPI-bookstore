@@ -32,7 +32,7 @@ public class BookController {
         boolean isTitleExist = this.bookService.isTitleExist(bookRequest.getTitle());
 
         if (isTitleExist) {
-            throw new InvalidException("Book with title: " + bookRequest.getTitle() + " is exist");
+            throw new InvalidException("Book with title: " + bookRequest.getTitle() + " is exist in database");
         }
 
         Book newBook = this.bookService.handleCreateBook(bookRequest);

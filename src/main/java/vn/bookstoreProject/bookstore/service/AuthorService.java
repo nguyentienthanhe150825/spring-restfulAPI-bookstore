@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.Valid;
 import vn.bookstoreProject.bookstore.domain.Author;
 import vn.bookstoreProject.bookstore.repository.AuthorRepository;
 import vn.bookstoreProject.bookstore.repository.BookRepository;
@@ -31,5 +32,21 @@ public class AuthorService {
             return authorOptional.get();
         }
         return null;
+    }
+
+    public Author handleUpdateAuthor(Author authorRequest) {
+        // Find author by id
+        Author currentAuthor = this.getAuthorById(authorRequest.getId());
+        // check if currentAuthor is not null
+        if (currentAuthor != null) {
+            // set value
+            currentAuthor.setName(authorRequest.getName());
+            currentAuthor.setNationality(authorRequest.getNationality());
+
+            // update author in database
+            currentAuthor = this.authorRepository.save(currentAuthor);
+        }
+
+        return currentAuthor;
     }
 }

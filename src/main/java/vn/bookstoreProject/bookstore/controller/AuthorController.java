@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class AuthorController {
         boolean isAuthorNameExist = this.authorService.isAuthorNameExist(authorRequest.getName());
         
         if(isAuthorNameExist) {
-            throw new InvalidException("Name " + authorRequest.getName() + " is exist");
+            throw new InvalidException("Name " + authorRequest.getName() + " is exist in database");
         }
 
         Author newAuthor = this.authorService.handleCreateAuthor(authorRequest);
@@ -49,6 +50,22 @@ public class AuthorController {
             throw new InvalidException("Author with id = " + id + " not exist");
         }
         return ResponseEntity.status(HttpStatus.OK).body(author);
+    }
+
+    @PutMapping("/authors")
+    @ApiMessage("Update author")
+    public ResponseEntity<Author> updateAuthor(@Valid @RequestBody Author authorRequest) throws InvalidException {
+        // check authorName exist in database
+        boolean isAuthorNameExist = this.authorService.isAuthorNameExist(authorRequest.getName());
+        if(isAuthorNameExist) {
+            throw new InvalidException("Name " + authorRequest.getName() + " is exist in database");
+        }
+
+        Author authorUpdate = this.authorService.handleUpdateAuthor(authorRequest);
+        if (authorUpdate == null) {
+            throw new InvalidException("Author with id = " + authorRequest.getId() + " not exist");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(authorUpdate);
     }
 
 }
